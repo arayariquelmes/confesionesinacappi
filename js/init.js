@@ -15,6 +15,31 @@ tinymce.init({
     content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
   });
 
+window.eliminar  = function(){
+    let nroConfesion = this.nroConfesion;
+    Swal.fire({
+        title: 'Desea descartar el comentario?',
+        text: "Esta accion no se puede deshacer",
+        icon: 'error',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si, descartar!',
+        cancelButtonText: 'No, me arrepentí'
+      }).then((result) => { //Promesa
+        if (result.isConfirmed) {
+          window.confesiones.splice(nroConfesion,1);
+          window.cargarTabla();
+          Swal.fire(
+            'Descartado!',
+            'El comentario fue eliminado.',
+            'success'
+          )
+        }
+    });
+
+};
+
 window.cargarTabla = ()=>{
     const tabla = document.querySelector("#confesiones-table > tbody");
     tabla.innerHTML = "";
@@ -25,12 +50,20 @@ window.cargarTabla = ()=>{
         let tdNombre = document.createElement("td");
         let tdTexto = document.createElement("td");
         let tdCarrera = document.createElement("td");
+        let tdAcciones = document.createElement("td");
         tdNombre.innerText = confesionActual.nombre;
         tdTexto.innerHTML = confesionActual.texto;
         tdCarrera.innerText = confesionActual.carrera;
+        let boton = document.createElement("button");
+        boton.classList.add("btn","btn-danger","btn-sm");
+        boton.innerText = "Descartar comentario";
+        boton.nroConfesion = i;
+        boton.addEventListener('click', window.eliminar);
+        tdAcciones.appendChild(boton);
         tr.appendChild(tdNombre);
         tr.appendChild(tdTexto);
         tr.appendChild(tdCarrera);
+        tr.appendChild(tdAcciones);
         tabla.appendChild(tr);  
     }
 }
